@@ -1,4 +1,5 @@
 import styles from "./page.module.css";
+import SideBar from "@/component/SideBar/SideBar";
 
 export default function Home() {
     return (
@@ -10,6 +11,7 @@ export default function Home() {
                     <div className={styles.micButtonTitle}>環境音の分析を開始</div>
                 </div>
             </div>
+            <SideBar/>
         </main>
     );
 }

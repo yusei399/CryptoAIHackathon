@@ -1,0 +1,28 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 64px;
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    background-color: white;
+    border-radius: 16px;
+    opacity: 0.9;
+    padding: 16px 12px;
+}
+
+.icon {
+    padding: 8px 0;
+}
+
+.icon:active {
+    color: #424242;
+}
+
+.bar {
+    width: 32px;
+    border-bottom: 2px solid #424242;
+    margin: 16px auto 20px;
+}
