@@ -29,6 +29,7 @@
     align-items: center;
     text-align: center;
     background-color: #424242;
+    color: white;
     opacity: 1;
     transition: transform 0.1s;
 }
