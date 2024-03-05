@@ -1,5 +1,5 @@
 "use client";
-import styles from "@/component/SideBar/SideBar.module.css";
+import styles from "./SideBar.module.css";
 import common from "@/app/common.module.css";
 import {MouseEventHandler, useState} from "react";
 

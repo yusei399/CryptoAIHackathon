@@ -1,0 +1,19 @@
+.container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+.playbackTime {
+    color: white;
+    text-align: right;
+    margin-right: 12px;
+    margin-bottom: 8px;
+}
+
+.seekbar {
+
+    height: 6px;
+    background-color: white;
+}

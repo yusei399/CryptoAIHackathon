@@ -3,6 +3,7 @@ import SideBar from "@/component/SideBar/SideBar";
 import React from "react";
 import {fetchAlbumImageUrl} from "@/api/SpotifyApi.server";
 import Image from "next/image";
+import PlayerSeekbar from "@/component/PlayerSeekbar/PlayerSeekbar";
 
 const Page = () => {
     const imageUrl = fetchAlbumImageUrl();
@@ -23,6 +24,7 @@ const Page = () => {
                     <div>Creepy Nuts</div>
                 </div>
             }
+            <PlayerSeekbar/>
             <SideBar/>
         </main>
     );
