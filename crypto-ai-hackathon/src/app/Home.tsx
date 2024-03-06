@@ -1,5 +1,5 @@
 "use client"
-import styles from "./home.module.css";
+import styles from "./Home.module.css";
 import SideBar from "@/component/SideBar/SideBar";
 import React, {useEffect, useRef, useState} from "react";
 import {fetchAlbumImageUrl} from "@/api/SpotifyApi.server";
