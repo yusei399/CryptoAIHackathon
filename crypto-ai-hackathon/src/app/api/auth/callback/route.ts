@@ -9,17 +9,17 @@ type SpotifyAuthApiResponse = {
     refresh_token: string;
 };
 
-const setCookie = (res: NextResponse, name: string, value: unknown) => {
-    const stringValue =
-        typeof value === "object" ? "j:" + JSON.stringify(value) : String(value);
+interface CookieOptions {
+    httpOnly: boolean;
+    secure: boolean;
+    maxAge: number; // 有効期限を秒単位で設定
+    path: string;
+}
 
-    const options: CookieSerializeOptions = {
-        httpOnly: false,
-        secure: true,
-        maxAge: 3600, // 有効期限を1時間に設定
-        path: "/",
-    };
+const setCookie = (res: NextResponse, name: string, value: unknown, options: CookieOptions) => {
+    const stringValue = typeof value === 'object' ? 'j:' + JSON.stringify(value) : String(value);
 
+    // Next.js の Response オブジェクトに cookie を設定
     res.cookies.set(name, stringValue, options);
 };
 
@@ -39,8 +39,8 @@ export async function GET(req: NextRequest) {
     }
 
     const params = new URLSearchParams({
-        code: code || "",
-        redirect_uri: spotify_redirect_uri,
+        code: code || "", // `code` が null または undefined の場合、空文字列を使用
+        redirect_uri: spotify_redirect_uri || "", // `spotify_redirect_uri` が undefined の場合、空文字列を使用
         grant_type: "authorization_code",
     });
 
@@ -60,7 +60,12 @@ export async function GET(req: NextRequest) {
 
         if (response.data.access_token) {
             const res = NextResponse.redirect(new URL("/", req.url));
-            setCookie(res, "spotify-token", response.data.access_token);
+            setCookie(res, "spotify-token", response.data.access_token, {
+                httpOnly: true, // または必要に応じて false
+                secure: true,
+                maxAge: 3600, // 1時間
+                path: "/"
+            });
             return res;
         }
     } catch (error) {

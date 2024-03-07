@@ -26,11 +26,13 @@ export function GET() {
     }
     // console.log(spotify_client_id)
 
+    const redirect_uri = spotify_redirect_uri || "";
+
     const auth_query_parameters = new URLSearchParams({
         response_type: "code",
-        client_id: spotify_client_id,
+        client_id: spotify_client_id, // この値は既に `string` 型として確保されています
         scope: scope,
-        redirect_uri: spotify_redirect_uri,
+        redirect_uri: redirect_uri, // 修正された `redirect_uri` を使用
         state: state,
     });
 
