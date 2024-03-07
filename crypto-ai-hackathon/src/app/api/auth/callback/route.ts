@@ -1,4 +1,4 @@
-import {NextResponse, NextApiRequest} from "next/server";
+import {NextResponse, NextRequest} from "next/server";
 import axios from "axios";
 
 type SpotifyAuthApiResponse = {
@@ -23,7 +23,7 @@ const setCookie = (res: NextResponse, name: string, value: unknown) => {
     res.cookies.set(name, stringValue, options);
 };
 
-export async function GET(req: NextApiRequest) {
+export async function GET(req: NextRequest) {
     const url = req.nextUrl.clone();
     const code = url.searchParams.get("code");
     const spotify_redirect_uri = process.env.REDIRECT_URL;
