@@ -1,7 +1,7 @@
 "use client"
 import styles from "./Home.module.css";
 import SideBar from "@/component/SideBar/SideBar";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {fetchAlbumImageUrl} from "@/api/SpotifyApi.server";
 import Image from "next/image";
 import PlayerSeekbar from "@/component/PlayerSeekbar/PlayerSeekbar";
@@ -74,8 +74,8 @@ const Home = ({token}: Props) => {
         </div>
         {hasPlaylist &&
             <div className={styles.songTitle}>
-                <div>Bling-Bang-Bang-Born</div>
-                <div>Creepy Nuts</div>
+                <div>唱</div>
+                <div>Ado</div>
             </div>
         }
         <PlayerSeekbar/>

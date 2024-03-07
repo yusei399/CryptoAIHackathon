@@ -39,7 +39,7 @@ const PlayerSeekbar = () => {
 
     return (
         <div className={styles.container}>
-            <div className={styles.playbackTime}>2:32 / 2:49</div>
+            <div className={styles.playbackTime}>2:51 / 3:10</div>
             <div className={styles.seekbar} style={{width: "90%"}}/>
         </div>
     );
