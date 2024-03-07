@@ -1,57 +1,43 @@
-import styles from "./page.module.css";
-import SideBar from "@/component/SideBar/SideBar";
-import React from "react";
-import {fetchAlbumImageUrl} from "@/api/SpotifyApi.server";
+"use client"
+import React, {useEffect, useState} from "react";
+import Home from "@/app/Home";
+import styles from "@/app/page.module.css";
 import Image from "next/image";
-import PlayerSeekbar from "@/component/PlayerSeekbar/PlayerSeekbar";
+import Link from "next/link";
 
 const Page = () => {
-    const imageUrl = fetchAlbumImageUrl();
-    const hasPlaylist = true;
+    const [token, setToken] = useState('');
+
+    useEffect(() => {
+        const accessToken = getCookie('spotify-token');
+        if (accessToken) {
+            setToken(accessToken)
+        }
+    }, []);
+
     return (
         <main className={styles.main}>
-            {hasPlaylist &&
-                <div className={styles.blurImage} style={{backgroundImage: `url('${imageUrl}')`}}/>
-            }
-            <div className={styles.circleContainer}>
-                {hasPlaylist
-                    ? <PlaylistCircle imageUrl={imageUrl}/>
-                    : <RecordCircle/>}
-            </div>
-            {hasPlaylist &&
-                <div className={styles.songTitle}>
-                    <div>Bling-Bang-Bang-Born</div>
-                    <div>Creepy Nuts</div>
-                </div>
-            }
-            <PlayerSeekbar/>
-            <SideBar/>
+            {(token === '') ? <LoginButton/> : <Home token={token}/>}
         </main>
     );
 }
 
-const RecordCircle = () => {
-    return <>
-        <span className={styles.outerCircle} style={{scale: 2.3}}/>
-        <span className={styles.outerCircle} style={{scale: 1.05}}/>
-        <div className={`${styles.outerCircle} ${styles.micButton}`}>
-            <div className={styles.micButtonTitle}>環境音の分析を開始</div>
-        </div>
-    </>;
-}
+const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+};
 
-type PlaylistScreenProps = {
-    imageUrl: string,
-}
 
-const PlaylistCircle = ({imageUrl}: PlaylistScreenProps) => {
-    return <>
-        <span className={styles.outerCircle} style={{scale: 2.2}}/>
-        <span className={styles.outerCircle} style={{scale: 1.3}}/>
-        <div className={styles.outerCircle}>
-            <Image src={imageUrl} width={248} height={248} style={{borderRadius: "50%"}} alt={""}/>
+const LoginButton = () => {
+    return (
+        <div className={styles.container}>
+            <Link className={styles.loginButton} href="/api/auth/login">
+                <Image className={styles.spotify} src="/spotify.png" width={16} height={16} alt=""/>
+                <span>Spotifyに接続する</span>
+            </Link>
         </div>
-    </>;
+    );
 }
 
 export default Page
