@@ -26,32 +26,32 @@ const Home = ({token}: Props) => {
         window.onSpotifyWebPlaybackSDKReady = () => {
             const player = new Spotify.Player({
                 name: 'CryptoAIHackathon',
-                getOAuthToken: async (cb) => {
+                getOAuthToken: async (cb: (arg0: string) => void) => {
                     cb(token);
                 },
             });
 
-            player.addListener('ready', ({device_id}) => {
+            player.addListener('ready', ({device_id}: {device_id: string}) => {
                 console.log('Ready with Device ID', device_id);
             });
 
-            player.addListener('not_ready', ({device_id}) => {
+            player.addListener('not_ready', ({device_id}: {device_id: string}) => {
                 console.log('Device ID has gone offline', device_id);
             });
 
-            player.addListener('initialization_error', ({message}) => {
+            player.addListener('initialization_error', ({message}: {message: string}) => {
                 console.error(message);
             });
 
-            player.addListener('authentication_error', ({message}) => {
+            player.addListener('authentication_error', ({message}: {message: string}) => {
                 console.error(message);
             });
 
-            player.addListener('account_error', ({message}) => {
+            player.addListener('account_error', ({message}: {message: string}) => {
                 console.error(message);
             });
 
-            player.connect().then(success => {
+            player.connect().then((success: any) => {
                 if (success) {
                     console.log('The Web Playback SDK successfully connected to Spotify!');
                 }
