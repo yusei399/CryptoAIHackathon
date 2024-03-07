@@ -13,7 +13,7 @@ const setCookie = (res: NextResponse, name: string, value: unknown) => {
     const stringValue =
         typeof value === "object" ? "j:" + JSON.stringify(value) : String(value);
 
-    const options: CookieSerializeOptions = {
+    const options = {
         httpOnly: false,
         secure: true,
         maxAge: 3600, // 有効期限を1時間に設定
