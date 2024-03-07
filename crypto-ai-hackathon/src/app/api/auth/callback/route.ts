@@ -1,6 +1,5 @@
-import {NextResponse} from "next/server";
+import {NextResponse, NextApiRequest} from "next/server";
 import axios from "axios";
-import {NextApiRequest} from "next";
 
 type SpotifyAuthApiResponse = {
     access_token: string;
@@ -17,6 +16,7 @@ const setCookie = (res: NextResponse, name: string, value: unknown) => {
     const options: CookieSerializeOptions = {
         httpOnly: false,
         secure: true,
+        maxAge: 3600, // 有効期限を1時間に設定
         path: "/",
     };
 
