@@ -27,7 +27,7 @@ const setCookie = (res: NextResponse, name: string, value: unknown) => {
 export async function GET(req: NextRequest) {
     const url = req.nextUrl.clone();
     const code = url.searchParams.get("code");
-    const spotify_redirect_uri = process.env.REDIRECT_URL;
+    const spotify_redirect_uri = process.env.REDIRECT_URL ?? "";
 
     let spotify_client_id: string = process.env.SPOTIFY_CLIENT_ID || "";
     let spotify_client_secret: string = process.env.SPOTIFY_CLIENT_SECRET || "";
