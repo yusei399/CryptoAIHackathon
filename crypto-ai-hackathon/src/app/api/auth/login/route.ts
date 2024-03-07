@@ -13,7 +13,7 @@ const generateRandomString = (length: number): string => {
 
 export function GET() {
     const scope: string = "streaming user-read-email user-read-private";
-    const spotify_redirect_uri = process.env.REDIRECT_URL;
+    const spotify_redirect_uri = process.env.REDIRECT_URL ?? "";
     const state: string = generateRandomString(16);
 
     let spotify_client_id: string = "";
