@@ -4,17 +4,23 @@ import SideBar from "@/component/SideBar/SideBar";
 import React, {useEffect, useState} from "react";
 import Image from "next/image";
 import PlayerSeekbar from "@/component/PlayerSeekbar/PlayerSeekbar";
-import {fetchAlbumImageUrl, play} from "@/app/api/spotify/spotify-api";
+import {play} from "@/app/api/spotify/spotify-api";
 
 type Props = {
     token: string,
+}
+
+type CurrentTrack = {
+    name: string,
+    albumImageUrl: string,
+    artist: string,
 }
 
 const Home = ({token}: Props) => {
     const hasPlaylist = true;
 
     const [player, setPlayer] = useState<Spotify.Player | null>(null);
-    const [imageUrl, setImageUrl] = useState<string>("");
+    const [currentTrack, setCurrentTrack] = useState<CurrentTrack | null>(null);
     const [isPaused, setPaused] = useState(true)
 
     useEffect(() => {
@@ -22,10 +28,6 @@ const Home = ({token}: Props) => {
         script.src = "https://sdk.scdn.co/spotify-player.js";
         script.async = true;
         document.body.appendChild(script);
-
-        fetchAlbumImageUrl().then((imageUrl: string) => {
-            setImageUrl(imageUrl);
-        });
 
         window.onSpotifyWebPlaybackSDKReady = () => {
             const player = new Spotify.Player({
@@ -69,6 +71,15 @@ const Home = ({token}: Props) => {
                 player?.getCurrentState().then((state) => {
                     setPaused(state?.paused ?? true);
                 });
+
+                const track = state.track_window.current_track;
+                if (track) {
+                    setCurrentTrack({
+                        name: track.name,
+                        albumImageUrl: track.album.images[0].url,
+                        artist: track.artists[0].name,
+                    })
+                }
             });
 
             player.connect().then((success: any) => {
@@ -84,17 +95,17 @@ const Home = ({token}: Props) => {
 
     return <>
         {hasPlaylist &&
-            <div className={styles.blurImage} style={{backgroundImage: `url('${imageUrl}')`}}/>
+            <div className={styles.blurImage} style={{backgroundImage: `url('${currentTrack?.albumImageUrl ?? ""}')`}}/>
         }
         <div className={styles.circleContainer}>
             {hasPlaylist
-                ? <PlaylistCircle imageUrl={imageUrl}/>
+                ? <PlaylistCircle imageUrl={currentTrack?.albumImageUrl}/>
                 : <RecordCircle/>}
         </div>
         {hasPlaylist &&
             <div className={styles.songTitle}>
-                <div>唱</div>
-                <div>Ado</div>
+                <div>{currentTrack?.name}</div>
+                <div>{currentTrack?.artist}</div>
             </div>
         }
         <PlayerSeekbar/>
@@ -113,7 +124,7 @@ const RecordCircle = () => {
 }
 
 type PlaylistScreenProps = {
-    imageUrl: string,
+    imageUrl: string | undefined,
 }
 
 const PlaylistCircle = ({imageUrl}: PlaylistScreenProps) => {
@@ -121,7 +132,7 @@ const PlaylistCircle = ({imageUrl}: PlaylistScreenProps) => {
         <span className={styles.outerCircle} style={{scale: 2.2}}/>
         <span className={styles.outerCircle} style={{scale: 1.3}}/>
         <div className={styles.outerCircle}>
-            <Image src={imageUrl} width={248} height={248} style={{borderRadius: "50%"}} alt={""}/>
+            {imageUrl && <Image src={imageUrl} width={248} height={248} style={{borderRadius: "50%"}} alt={""}/>}
         </div>
     </>;
 }
