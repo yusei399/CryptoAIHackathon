@@ -9,6 +9,7 @@ import Recoding from "@/component/Recoding/Recoding";
 
 type Props = {
     token: string,
+    musicId: string,
 }
 
 type CurrentTrack = {
@@ -17,8 +18,8 @@ type CurrentTrack = {
     artist: string,
 }
 
-const Home = ({token}: Props) => {
-    const hasPlaylist = true;
+const Home = ({token, musicId}: Props) => {
+    const hasPlaylist = musicId !== "";
 
     const [expandState1, setExpandState1] = useState(true);
     const [expandState2, setExpandState2] = useState(false);
@@ -52,8 +53,6 @@ const Home = ({token}: Props) => {
 
             player.addListener('ready', ({device_id}: { device_id: string }) => {
                 console.log('Ready with Device ID', device_id);
-
-                const musicId = "0kdqcbwei4MDWFEX5f33yG";
                 play(musicId, token, device_id);
             });
 
@@ -109,6 +108,7 @@ const Home = ({token}: Props) => {
     }, []);
 
     return <>
+        <a href={""} />
         {hasPlaylist &&
             <div className={styles.blurImage} style={{backgroundImage: `url('${currentTrack?.albumImageUrl ?? ""}')`}}/>
         }

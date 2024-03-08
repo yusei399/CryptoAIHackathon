@@ -15,7 +15,7 @@ const Recoding = ({isIcon}: Props) => {
     useEffect(() => {
         navigator.mediaDevices.getUserMedia({audio: true})
             .then(stream => {
-                const newMediaRecorder = new MediaRecorder(stream);
+                const newMediaRecorder = new MediaRecorder(stream, {mimeType: 'audio/webm'});
                 setMediaRecorder(newMediaRecorder);
             })
             .catch(err => console.error('Audio recording error:', err));
@@ -50,12 +50,13 @@ const Recoding = ({isIcon}: Props) => {
                 if (e.data && e.data.size > 0) {
                     // FormDataを作成し、Blobデータを追加
                     const formData = new FormData();
-                    formData.append('file', e.data);
 
-                    const url = 'http://ec2-35-76-128-253.ap-northeast-1.compute.amazonaws.com/api/v1/recommendation';
+                    const url = 'https://cryptoaihackathon-backend.onrender.com/api/v1/recommendation';
                     axios.post(url, formData)
                         .then((response) => {
                             console.log('Response:', response.data);
+                            setCookie("music-id", response.data.music_id);
+                            location.reload();
                         })
                         .catch((error) => {
                             if (error.response) {
@@ -103,5 +104,12 @@ const Recoding = ({isIcon}: Props) => {
         }
     }
 }
+
+const setCookie = (name: string, value: string) => {
+    const date = new Date();
+    date.setTime(date.getTime() + 1000 * 60 * 5); // 5分間有効
+    const expires = "expires=" + date.toUTCString();
+    document.cookie = name + "=" + value + ";" + expires + ";path=/";
+};
 
 export default Recoding;

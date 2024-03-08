@@ -7,17 +7,22 @@ import Link from "next/link";
 
 const Page = () => {
     const [token, setToken] = useState('');
+    const [musicId, setMusicId] = useState('');
 
     useEffect(() => {
         const accessToken = getCookie('spotify-token');
         if (accessToken) {
             setToken(accessToken)
         }
+        const musicId = getCookie('music-id');
+        if (musicId) {
+            setMusicId(musicId)
+        }
     }, []);
 
     return (
         <main className={styles.main}>
-            {(token === '') ? <LoginButton/> : <Home token={token}/>}
+            {(token === '') ? <LoginButton/> : <Home token={token} musicId={musicId}/>}
         </main>
     );
 }
