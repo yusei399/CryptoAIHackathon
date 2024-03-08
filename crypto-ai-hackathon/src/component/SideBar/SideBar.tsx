@@ -48,7 +48,7 @@ const SideBar = ({player, isPaused, setPaused}: Props) => {
         <div className={styles.container}>
             <IconButton content={"mic_none"} fontSize={40} onClick={startRecording}/>
             <div className={styles.bar}/>
-            <IconButton content={"skip_previous"} fontSize={36}/>
+            <IconButton content={"skip_previous"} fontSize={36} onClick={() => player?.previousTrack()}/>
             <IconButton content={isPaused ? "play_circle_filled" : "pause_circle_filled"} fontSize={48}
                         onClick={async () => {
                             setPaused(!isPaused);
@@ -58,7 +58,7 @@ const SideBar = ({player, isPaused, setPaused}: Props) => {
                                 player?.pause();
                             }
                         }}/>
-            <IconButton content={"skip_next"} fontSize={36}/>
+            <IconButton content={"skip_next"} fontSize={36} onClick={() => player?.nextTrack()}/>
 
             {/* {audioUrl && <audio src={audioUrl} controls />} 録音の確認がしたかったので */}
         </div>

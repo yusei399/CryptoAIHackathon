@@ -33,14 +33,14 @@ const Home = ({token}: Props) => {
                 getOAuthToken: async (cb: (arg0: string) => void) => {
                     cb(token);
                 },
-                volume: 0.8,
+                volume: 0.5,
             });
             setPlayer(player);
 
             player.addListener('ready', ({device_id}: { device_id: string }) => {
                 console.log('Ready with Device ID', device_id);
 
-                const playlistId = "3cEYpjA9oz9GiPac4AsH4n";
+                const playlistId = "37i9dQZF1E39EhApdPG3xa";
                 play(playlistId, token, device_id);
             });
 
