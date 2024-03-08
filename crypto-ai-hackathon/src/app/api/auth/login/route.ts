@@ -12,7 +12,7 @@ const generateRandomString = (length: number): string => {
 };
 
 export function GET() {
-    const scope: string = "streaming user-read-email user-read-private";
+    const scope: string = "streaming user-read-email user-read-private user-modify-playback-state user-read-playback-state";
     const spotify_redirect_uri = process.env.REDIRECT_URL ?? "";
     const state: string = generateRandomString(16);
 
@@ -24,7 +24,6 @@ export function GET() {
             'Undefined Error: An environmental variable, "SPOTIFY_CLIENT_ID", has something wrong.'
         );
     }
-    // console.log(spotify_client_id)
 
     const redirect_uri = spotify_redirect_uri || "";
 

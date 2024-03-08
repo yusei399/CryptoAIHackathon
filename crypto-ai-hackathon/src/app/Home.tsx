@@ -2,26 +2,29 @@
 import styles from "./Home.module.css";
 import SideBar from "@/component/SideBar/SideBar";
 import React, {useEffect, useState} from "react";
-import {fetchAlbumImageUrl} from "@/api/SpotifyApi.server";
 import Image from "next/image";
 import PlayerSeekbar from "@/component/PlayerSeekbar/PlayerSeekbar";
+import {fetchAlbumImageUrl, play} from "@/app/api/spotify/spotify-api";
 
 type Props = {
     token: string,
 }
 
 const Home = ({token}: Props) => {
-    const imageUrl = fetchAlbumImageUrl();
     const hasPlaylist = true;
 
     const [player, setPlayer] = useState<Spotify.Player | null>(null);
-    const [deviceId, setDeviceId] = useState<string>();
+    const [imageUrl, setImageUrl] = useState<string>("");
 
     useEffect(() => {
         const script = document.createElement("script");
         script.src = "https://sdk.scdn.co/spotify-player.js";
         script.async = true;
         document.body.appendChild(script);
+
+        fetchAlbumImageUrl().then((imageUrl: string) => {
+            setImageUrl(imageUrl);
+        });
 
         window.onSpotifyWebPlaybackSDKReady = () => {
             const player = new Spotify.Player({
@@ -30,9 +33,13 @@ const Home = ({token}: Props) => {
                     cb(token);
                 },
             });
+            setPlayer(player);
 
             player.addListener('ready', ({device_id}: {device_id: string}) => {
                 console.log('Ready with Device ID', device_id);
+
+                const playlistId = "3cEYpjA9oz9GiPac4AsH4n";
+                play(playlistId, token, device_id);
             });
 
             player.addListener('not_ready', ({device_id}: {device_id: string}) => {
@@ -40,15 +47,33 @@ const Home = ({token}: Props) => {
             });
 
             player.addListener('initialization_error', ({message}: {message: string}) => {
-                console.error(message);
+                console.error('initialization_error', message);
             });
 
             player.addListener('authentication_error', ({message}: {message: string}) => {
-                console.error(message);
+                console.error('authentication_error', message);
             });
 
             player.addListener('account_error', ({message}: {message: string}) => {
-                console.error(message);
+                console.error('account_error', message);
+            });
+
+            player.addListener("player_state_changed", (state) => {
+                console.log("player_state_changed", state)
+                if (!state) {
+                    return;
+                }
+
+                // setTrack(state.track_window.current_track);
+                // setPaused(state.paused);
+                //
+                // player.getCurrentState().then((state) => {
+                //     if (!state) {
+                //         setActive(false);
+                //     } else {
+                //         setActive(true);
+                //     }
+                // });
             });
 
             player.connect().then((success: any) => {
@@ -56,7 +81,6 @@ const Home = ({token}: Props) => {
                     console.log('The Web Playback SDK successfully connected to Spotify!');
                 }
             })
-            setPlayer(player);
         };
         return () => {
             player?.disconnect();
@@ -79,7 +103,7 @@ const Home = ({token}: Props) => {
             </div>
         }
         <PlayerSeekbar/>
-        <SideBar/>
+        <SideBar player={player}/>
     </>;
 }
 
