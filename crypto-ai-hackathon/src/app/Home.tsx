@@ -19,6 +19,8 @@ type CurrentTrack = {
 const Home = ({token}: Props) => {
     const hasPlaylist = true;
 
+    const [expandState1, setExpandState1] = useState(true);
+    const [expandState2, setExpandState2] = useState(false);
     const [player, setPlayer] = useState<Spotify.Player | null>(null);
     const [currentTrack, setCurrentTrack] = useState<CurrentTrack | null>(null);
     const [seekState, setSeekState] = useState<PlayerSeekState | null>(null);
@@ -29,6 +31,13 @@ const Home = ({token}: Props) => {
         script.src = "https://sdk.scdn.co/spotify-player.js";
         script.async = true;
         document.body.appendChild(script);
+
+        // 1.05から2.3の範囲で拡大アニメーションを生成
+        const animateCircle = () => {
+            setExpandState1(prevScale1 => !prevScale1);
+            setExpandState2(prevScale2 => !prevScale2);
+        };
+        const intervalId = setInterval(animateCircle, 1000);
 
         window.onSpotifyWebPlaybackSDKReady = () => {
             const player = new Spotify.Player({
@@ -43,7 +52,7 @@ const Home = ({token}: Props) => {
             player.addListener('ready', ({device_id}: { device_id: string }) => {
                 console.log('Ready with Device ID', device_id);
 
-                const playlistId = "37i9dQZF1E39EhApdPG3xa";
+                const playlistId = "5SLPaOxQyJ8Ne9zpmTOvSe";
                 play(playlistId, token, device_id);
             });
 
@@ -93,6 +102,7 @@ const Home = ({token}: Props) => {
             })
         };
         return () => {
+            clearInterval(intervalId);
             player?.disconnect();
         };
     }, []);
@@ -103,7 +113,8 @@ const Home = ({token}: Props) => {
         }
         <div className={styles.circleContainer}>
             {hasPlaylist
-                ? <PlaylistCircle imageUrl={currentTrack?.albumImageUrl}/>
+                ? <PlaylistCircle imageUrl={currentTrack?.albumImageUrl} expandState1={expandState1}
+                                  expandState2={expandState2}/>
                 : <RecordCircle/>}
         </div>
         {hasPlaylist &&
@@ -129,12 +140,18 @@ const RecordCircle = () => {
 
 type PlaylistScreenProps = {
     imageUrl: string | undefined,
+    expandState1: boolean,
+    expandState2: boolean,
 }
 
-const PlaylistCircle = ({imageUrl}: PlaylistScreenProps) => {
+const PlaylistCircle = ({imageUrl, expandState1, expandState2}: PlaylistScreenProps) => {
     return <>
-        <span className={styles.outerCircle} style={{scale: 2.2}}/>
-        <span className={styles.outerCircle} style={{scale: 1.3}}/>
+        <span className={styles.outerCircle} style={{
+            transform: `scale(${expandState1 ? 1.8 : 2.2})`,
+        }}/>
+        <span className={styles.outerCircle} style={{
+            transform: `scale(${expandState2 ? 1.2 : 1.7})`,
+        }}/>
         <div className={styles.outerCircle}>
             {imageUrl && <Image src={imageUrl} width={248} height={248} style={{borderRadius: "50%"}} alt={""}/>}
         </div>
