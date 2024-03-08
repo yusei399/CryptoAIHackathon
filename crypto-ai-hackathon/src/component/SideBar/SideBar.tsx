@@ -60,7 +60,7 @@ const SideBar = ({player, isPaused, setPaused}: Props) => {
     return (
         <div className={styles.container}>
             {isRecording ? (
-                <div className={`${styles.icon} ${styles.countdown}`} style={{fontSize: 40}}>
+                <div className={`${styles.icon} ${styles.countdown}`} style={{fontSize: 28}}>
                     {countdown}
                 </div>
             ) : (
