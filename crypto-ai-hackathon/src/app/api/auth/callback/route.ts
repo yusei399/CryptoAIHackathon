@@ -62,7 +62,7 @@ export async function GET(req: NextRequest) {
         if (response.data.access_token) {
             const res = NextResponse.redirect(new URL("/", req.url));
             setCookie(res, "spotify-token", response.data.access_token, {
-                httpOnly: true, // または必要に応じて false
+                httpOnly: false, // クライアント側で読み取れるようにfalse
                 secure: true,
                 maxAge: 3600, // 1時間
                 path: "/"
