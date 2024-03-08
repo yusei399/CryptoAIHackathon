@@ -2,45 +2,48 @@
 import styles from "./PlayerSeekbar.module.css";
 import React, {useState, useEffect} from 'react';
 
-type PlayerState = {
+type Props = {
+    seekState: PlayerSeekState | null,
+}
+
+export type PlayerSeekState = {
     position: number;
     duration: number;
     paused: boolean;
     timestamp: number;
 };
 
-const PlayerSeekbar = () => {
-    const [lastState, setLastState] = useState<PlayerState | null>(null);
+const PlayerSeekbar = ({seekState}: Props) => {
     const [width, setWidth] = useState<number>(0);
+    const [duration, setDuration] = useState<string>("");
 
     useEffect(() => {
         const updatePosition = () => {
-            if (!lastState) {
+            if (!seekState) {
                 return;
             }
-
-            const newPosition = lastState.position + (lastState.paused ? 0 : Date.now() - lastState.timestamp);
-            const newWidth = (newPosition / lastState.duration) * 100;
+            const newPosition = seekState.position + (seekState.paused ? 0 : Date.now() - seekState.timestamp);
+            const newWidth = (newPosition / seekState.duration) * 100;
             setWidth(newWidth);
-            requestAnimationFrame(updatePosition);
-        };
 
-        const playerStateChanged = (state: PlayerState) => {
-            setLastState(state);
-        };
+            const calcDurationString = (duration: number): string => {
+                const totalSec = duration / 1000;
+                const minute = Math.floor(totalSec / 60);
+                const second = Math.floor(totalSec % 60);
+                return `${minute}:${second.toString().padStart(2, '0')}`
+            }
 
-        // player.addListener('player_state_changed', playerStateChanged);
-        requestAnimationFrame(updatePosition);
+            setDuration(`${calcDurationString(newPosition)} / ${calcDurationString(seekState.duration)}`);
 
-        return () => {
-            // player.removeListener('player_state_changed', playerStateChanged);
+            window.requestAnimationFrame(updatePosition);
         };
-    }, []);
+        window.requestAnimationFrame(updatePosition);
+    }, [seekState]);
 
     return (
         <div className={styles.container}>
-            <div className={styles.playbackTime}>2:51 / 3:10</div>
-            <div className={styles.seekbar} style={{width: "90%"}}/>
+            <div className={styles.playbackTime}>{duration}</div>
+            <div className={styles.seekbar} style={{width: `${width}%`}}/>
         </div>
     );
 };

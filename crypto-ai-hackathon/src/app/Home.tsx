@@ -3,7 +3,7 @@ import styles from "./Home.module.css";
 import SideBar from "@/component/SideBar/SideBar";
 import React, {useEffect, useState} from "react";
 import Image from "next/image";
-import PlayerSeekbar from "@/component/PlayerSeekbar/PlayerSeekbar";
+import PlayerSeekbar, {PlayerSeekState} from "@/component/PlayerSeekbar/PlayerSeekbar";
 import {play} from "@/app/api/spotify/spotify-api";
 
 type Props = {
@@ -21,6 +21,7 @@ const Home = ({token}: Props) => {
 
     const [player, setPlayer] = useState<Spotify.Player | null>(null);
     const [currentTrack, setCurrentTrack] = useState<CurrentTrack | null>(null);
+    const [seekState, setSeekState] = useState<PlayerSeekState | null>(null);
     const [isPaused, setPaused] = useState(true)
 
     useEffect(() => {
@@ -63,10 +64,12 @@ const Home = ({token}: Props) => {
             });
 
             player.addListener("player_state_changed", (state) => {
-                // console.log("player_state_changed", state)
                 if (!state) {
+                    // 何も再生していない場合
                     return;
                 }
+                // console.log("player_state_changed", state)  // テスト用
+
                 // プレイヤーの再生・停止状態を取得
                 player?.getCurrentState().then((state) => {
                     setPaused(state?.paused ?? true);
@@ -80,6 +83,7 @@ const Home = ({token}: Props) => {
                         artist: track.artists[0].name,
                     })
                 }
+                setSeekState(state);
             });
 
             player.connect().then((success: any) => {
@@ -108,7 +112,7 @@ const Home = ({token}: Props) => {
                 <div>{currentTrack?.artist}</div>
             </div>
         }
-        <PlayerSeekbar/>
+        <PlayerSeekbar seekState={seekState}/>
         <SideBar player={player} isPaused={isPaused} setPaused={setPaused}/>
     </>;
 }
