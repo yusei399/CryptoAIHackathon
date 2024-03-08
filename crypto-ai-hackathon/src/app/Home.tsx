@@ -15,6 +15,7 @@ const Home = ({token}: Props) => {
 
     const [player, setPlayer] = useState<Spotify.Player | null>(null);
     const [imageUrl, setImageUrl] = useState<string>("");
+    const [isPaused, setPaused] = useState(true)
 
     useEffect(() => {
         const script = document.createElement("script");
@@ -32,48 +33,42 @@ const Home = ({token}: Props) => {
                 getOAuthToken: async (cb: (arg0: string) => void) => {
                     cb(token);
                 },
+                volume: 0.8,
             });
             setPlayer(player);
 
-            player.addListener('ready', ({device_id}: {device_id: string}) => {
+            player.addListener('ready', ({device_id}: { device_id: string }) => {
                 console.log('Ready with Device ID', device_id);
 
                 const playlistId = "3cEYpjA9oz9GiPac4AsH4n";
                 play(playlistId, token, device_id);
             });
 
-            player.addListener('not_ready', ({device_id}: {device_id: string}) => {
+            player.addListener('not_ready', ({device_id}: { device_id: string }) => {
                 console.log('Device ID has gone offline', device_id);
             });
 
-            player.addListener('initialization_error', ({message}: {message: string}) => {
+            player.addListener('initialization_error', ({message}: { message: string }) => {
                 console.error('initialization_error', message);
             });
 
-            player.addListener('authentication_error', ({message}: {message: string}) => {
+            player.addListener('authentication_error', ({message}: { message: string }) => {
                 console.error('authentication_error', message);
             });
 
-            player.addListener('account_error', ({message}: {message: string}) => {
+            player.addListener('account_error', ({message}: { message: string }) => {
                 console.error('account_error', message);
             });
 
             player.addListener("player_state_changed", (state) => {
-                console.log("player_state_changed", state)
+                // console.log("player_state_changed", state)
                 if (!state) {
                     return;
                 }
-
-                // setTrack(state.track_window.current_track);
-                // setPaused(state.paused);
-                //
-                // player.getCurrentState().then((state) => {
-                //     if (!state) {
-                //         setActive(false);
-                //     } else {
-                //         setActive(true);
-                //     }
-                // });
+                // プレイヤーの再生・停止状態を取得
+                player?.getCurrentState().then((state) => {
+                    setPaused(state?.paused ?? true);
+                });
             });
 
             player.connect().then((success: any) => {
@@ -103,7 +98,7 @@ const Home = ({token}: Props) => {
             </div>
         }
         <PlayerSeekbar/>
-        <SideBar player={player}/>
+        <SideBar player={player} isPaused={isPaused} setPaused={setPaused}/>
     </>;
 }
 
