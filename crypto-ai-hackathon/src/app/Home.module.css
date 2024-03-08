@@ -27,37 +27,10 @@
     border-radius: 50%;
     background-color: white;
     opacity: 0.35;
-    transition: transform 2.8s ease;
 }
 
 .outerCircle:last-child {
     opacity: 1;
-}
-
-.micButton {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    background-color: #424242;
-    color: white;
-    transition: transform 0.1s;
-}
-
-.micButton:active {
-    transform: scale(0.9);
-}
-
-.micButtonTitle:before {
-    font-family: 'Material Icons', serif;
-    content: "mic_none";
-    font-size: 120px;
-}
-
-.micButtonTitle {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    padding-bottom: 8px;
 }
 
 .songTitle {

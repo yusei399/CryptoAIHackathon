@@ -5,6 +5,7 @@ import React, {useEffect, useState} from "react";
 import Image from "next/image";
 import PlayerSeekbar, {PlayerSeekState} from "@/component/PlayerSeekbar/PlayerSeekbar";
 import {play} from "@/app/api/spotify/spotify-api";
+import Recoding from "@/component/Recoding/Recoding";
 
 type Props = {
     token: string,
@@ -132,9 +133,7 @@ const RecordCircle = () => {
     return <>
         <span className={styles.outerCircle} style={{scale: 2.3}}/>
         <span className={styles.outerCircle} style={{scale: 1.05}}/>
-        <div className={`${styles.outerCircle} ${styles.micButton}`}>
-            <div className={styles.micButtonTitle}>環境音の分析を開始</div>
-        </div>
+        <Recoding isIcon={false} />
     </>;
 }
 
