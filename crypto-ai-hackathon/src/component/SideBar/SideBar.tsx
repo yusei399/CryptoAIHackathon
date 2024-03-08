@@ -13,9 +13,10 @@ type Props = {
 const SideBar = ({player, isPaused, setPaused}: Props) => {
     const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
     const [audioUrl, setAudioUrl] = useState<string | null>(null);
+    const [isRecording, setIsRecording] = useState<boolean>(false); 
+    const [countdown, setCountdown] = useState<number | null>(null); 
 
     useEffect(() => {
-        // ユーザーのマイクへのアクセスを要求
         navigator.mediaDevices.getUserMedia({audio: true})
             .then(stream => {
                 const newMediaRecorder = new MediaRecorder(stream);
@@ -27,26 +28,44 @@ const SideBar = ({player, isPaused, setPaused}: Props) => {
     const startRecording = () => {
         if (mediaRecorder && mediaRecorder.state === 'inactive') {
             mediaRecorder.start();
-            console.log('Recording started');
+            setIsRecording(true); 
+            setCountdown(5); 
+
+            const countdownInterval = setInterval(() => {
+                setCountdown(prevCountdown => {
+                    if (prevCountdown && prevCountdown > 1) {
+                        return prevCountdown - 1;
+                    } else {
+                        clearInterval(countdownInterval); // Clear the interval when countdown ends
+                        setIsRecording(false); // Reset recording state
+                        return null;
+                    }
+                });
+            }, 1000);
 
             setTimeout(() => {
                 if (mediaRecorder.state === 'recording') {
                     mediaRecorder.stop();
-                    console.log('Recording stopped');
+                    setIsRecording(false); // Reset recording state
                 }
-            }, 5000); // 5秒後に録音を停止
+            }, 5000); // Stop recording after 5 seconds
 
             mediaRecorder.ondataavailable = (e) => {
                 const audioUrl = URL.createObjectURL(e.data);
-                console.log('Recording URL:', audioUrl);
-                setAudioUrl(audioUrl); // 録音の確認がしたかった
+                setAudioUrl(audioUrl); // For reviewing the recording
             };
         }
     };
 
     return (
         <div className={styles.container}>
-            <IconButton content={"mic_none"} fontSize={40} onClick={startRecording}/>
+            {isRecording ? (
+                <div className={`${styles.icon} ${styles.countdown}`} style={{fontSize: 40}}>
+                    {countdown}
+                </div>
+            ) : (
+                <IconButton content={"mic_none"} fontSize={40} onClick={startRecording}/>
+            )}
             <div className={styles.bar}/>
             <IconButton content={"skip_previous"} fontSize={36} onClick={() => player?.previousTrack()}/>
             <IconButton content={isPaused ? "play_circle_filled" : "pause_circle_filled"} fontSize={48}
@@ -59,8 +78,7 @@ const SideBar = ({player, isPaused, setPaused}: Props) => {
                             }
                         }}/>
             <IconButton content={"skip_next"} fontSize={36} onClick={() => player?.nextTrack()}/>
-
-            {/* {audioUrl && <audio src={audioUrl} controls />} 録音の確認がしたかったので */}
+            {/* {audioUrl && <audio src={audioUrl} controls />}確認用 */}
         </div>
     );
 };
@@ -74,7 +92,7 @@ type ButtonProps = {
 const IconButton = ({content, fontSize, onClick}: ButtonProps) => {
     return (
         <div className={`${common.materialIcons} ${styles.icon}`} style={{fontSize: fontSize}}
-             onClick={onClick}>{content}</div>
+            onClick={onClick}>{content}</div>
     )
 }
 
