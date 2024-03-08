@@ -52,8 +52,8 @@ const Home = ({token}: Props) => {
             player.addListener('ready', ({device_id}: { device_id: string }) => {
                 console.log('Ready with Device ID', device_id);
 
-                const playlistId = "5SLPaOxQyJ8Ne9zpmTOvSe";
-                play(playlistId, token, device_id);
+                const musicId = "0kdqcbwei4MDWFEX5f33yG";
+                play(musicId, token, device_id);
             });
 
             player.addListener('not_ready', ({device_id}: { device_id: string }) => {
