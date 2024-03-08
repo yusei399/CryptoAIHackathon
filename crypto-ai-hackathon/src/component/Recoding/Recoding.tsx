@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import styles from "@/component/Recoding/Recoding.module.css";
 import {IconButton} from "@/component/SideBar/SideBar";
+import {router} from "next/client";
+// import {cookies} from "next/headers";
 
 type Props = {
     isIcon: boolean,
@@ -50,6 +52,9 @@ const Recoding = ({isIcon}: Props) => {
                 if (e.data && e.data.size > 0) {
                     // FormDataを作成し、Blobデータを追加
                     const formData = new FormData();
+                    formData.append('file', e.data);
+                    const audioURL = window.URL.createObjectURL(e.data);
+                    console.log(audioURL)
 
                     const url = 'https://cryptoaihackathon-backend.onrender.com/api/v1/recommendation';
                     axios.post(url, formData)
