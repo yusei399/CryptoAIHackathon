@@ -47,7 +47,7 @@ const Home = ({token, musicId}: Props) => {
                 getOAuthToken: async (cb: (arg0: string) => void) => {
                     cb(token);
                 },
-                volume: 0.5,
+                volume: 0.3,
             });
             setPlayer(player);
 
